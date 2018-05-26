@@ -1,0 +1,56 @@
+Queries for creating tables for the Library Database:
+
+CREATE TABLE BOOK(
+    isbn CHAR(10) NOT NULL PRIMARY KEY,
+    title VARCHAR(300) NOT NULL);
+
+CREATE TABLE BOOK_COPIES(
+    book_id CHAR(10) NOT NULL,
+    branch_id char(1) NOT NULL,
+    no_of_copies SMALLINT NOT NULL,
+    PRIMARY KEY(book_id,branch_id));
+
+CREATE TABLE BORROWER(
+     card_no CHAR(8) NOT NULL PRIMARY KEY,
+     ssn VARCHAR(10) NOT NULL,
+   	 fname VARCHAR(50) NOT NULL,
+     lname VARCHAR(50) NOT NULL,
+     address VARCHAR(300) NOT NULL,
+     phone VARCHAR(14) NOT NULL);
+
+CREATE TABLE BOOK_LOANS(
+    loan_id SMALLINT NOT NULL PRIMARY KEY,
+    isbn CHAR(10) NOT NULL,
+    branch_id SMALLINT NOT NULL,
+    card_no CHAR(8) NOT NULL,
+    date_out DATE NOT NULL,
+    due_date DATE NOT NULL,
+    date_in DATE NOT NULL);
+
+CREATE TABLE AUTHORS(
+    author_id INT NOT NULL PRIMARY KEY,
+    fullname VARCHAR(150) NOT NULL,
+    title VARCHAR(20) DEFAULT NULL,
+    fname VARCHAR(50) NOT NULL,
+    mname VARCHAR(50) DEFAULT NULL,
+    lname VARCHAR(50) NOT NULL,
+    suffix VARCHAR(25) DEFAULT NULL);
+
+
+CREATE TABLE BOOK_AUTHORS( isbn CHAR(10) NOT NULL, author_id INT NOT NULL, PRIMARY KEY(isbn,author_id), FOREIGN KEY(isbn) REFERENCES book(isbn), FOREIGN KEY(author_id) REFERENCES authors(author_id));
+
+CREATE TABLE FINES (loan_id smallint not null primary key,fine_amt decimal(10,2) not null, paid Boolean default false);
+
+// Foreign key constraints
+
+ALTER TABLE BOOK_COPIES ADD CONSTRAINT FK1_BOOK_COPIES FOREIGN KEY(book_id) REFERENCES BOOK(isbn) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE BOOK_COPIES ADD CONSTRAINT FK2_BOOK_COPIES FOREIGN KEY(branch_id) REFERENCES LIBRARY_BRANCH(branch_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE BOOK_LOANS ADD CONSTRAINT FK1_BOOK_LOANS FOREIGN KEY(isbn) REFERENCES BOOK(isbn) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE BOOK_LOANS ADD CONSTRAINT FK2_BOOK_LOANS FOREIGN KEY(branch_id) REFERENCES LIBRARY_BRANCH(branch_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+alter table book_loans add constraint fk3_book_loans foreign key(card_no) references borrower(card_no) on delete cascade on update cascade;
+
+alter table fines add constraint fk_fines foreign key(loan_id) references book_loans(loan_id);
