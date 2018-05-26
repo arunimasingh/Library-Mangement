@@ -1,10 +1,4 @@
 # Library-Mangement
-========================
-BUILD OUTPUT DESCRIPTION
-========================
-
-
-
 -The output jar (Library.jar) file is contained in the Library/dist folder.
 -Double clicking on Library.jar opens the application.
 
